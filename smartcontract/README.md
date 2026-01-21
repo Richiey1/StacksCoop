@@ -1,10 +1,10 @@
-# StacksTacToe Smart Contract
+# StacksCoop Smart Contract
 
-Clarity smart contract implementation for StacksTacToe - a decentralized Tic-Tac-Toe game on the Stacks blockchain.
+Clarity smart contract implementation for StacksCoop - a Bitcoin-Anchored Community Transparency Ledger on the Stacks blockchain.
 
 ## Overview
 
-The StacksTacToe smart contract enables on-chain Tic-Tac-Toe gameplay with provably fair outcomes. All game logic, moves, and state are stored and verified on the blockchain.
+The StacksCoop smart contract enables decentralized, transparent record-keeping for community organizations. All transactions, donations, and spending records are stored and verified on the blockchain, anchored to Bitcoin for permanent immutability.
 
 ## Clarity Version
 
@@ -16,9 +16,9 @@ The StacksTacToe smart contract enables on-chain Tic-Tac-Toe gameplay with prova
 ```
 smartcontract/
 ├── contracts/           # Clarity smart contract files (.clar)
-│   └── game.clar       # Main game contract
+│   └── stackscoop.clar # Main ledger contract
 ├── tests/              # Test files (.test.ts)
-│   └── game.test.ts    # Game contract tests
+│   └── stackscoop.test.ts # Ledger contract tests
 ├── settings/           # Network configuration
 │   ├── Devnet.toml    # Development network settings
 │   └── Testnet.toml   # Testnet deployment settings
@@ -28,13 +28,20 @@ smartcontract/
 └── README.md           # This file
 ```
 
-## Features (Coming Soon)
+## Features
 
-- **On-chain Game State**: Complete game board stored on blockchain
-- **Move Validation**: Smart contract validates all moves
-- **Win Detection**: Automatic win/draw detection
-- **Player Management**: Track players and game sessions
-- **Game History**: Immutable record of all games
+### Phase 1 (Current Development)
+- **Record Submission**: Submit donation and spending records on-chain
+- **Public Verification**: Read-only functions to verify all records
+- **Community Management**: Track community members and organizations
+- **Event Logging**: Emit events for off-chain indexing
+- **Access Control**: Role-based permissions for record submission
+
+### Phase 2 (Planned)
+- **Multi-Signature Approvals**: Require multiple approvals for large transactions
+- **Project Tracking**: Link records to specific community projects
+- **Voting Mechanisms**: Community governance on spending proposals
+- **Advanced Reporting**: Aggregated statistics and summaries
 
 ## Development Setup
 
@@ -61,20 +68,61 @@ npm run test
 npm run test:report
 ```
 
-## Contract Functions (Planned)
+## Contract Functions
 
 ### Public Functions
 
-- `create-game` - Start a new game session
-- `make-move` - Submit a move (X or O)
-- `get-game-state` - Retrieve current game board
-- `claim-victory` - Claim win when conditions are met
+- `submit-record` - Submit a new transaction record (donation/spending)
+- `add-member` - Add a new community member
+- `remove-member` - Remove a community member
+- `update-member-role` - Change member permissions
+- `create-community` - Register a new community organization
 
 ### Read-Only Functions
 
-- `get-board` - Get current board state
-- `check-winner` - Check if there's a winner
-- `is-valid-move` - Validate a proposed move
+- `get-record` - Retrieve a specific record by ID
+- `get-community-records` - Get all records for a community
+- `get-member` - Get member information
+- `verify-record` - Verify record authenticity
+- `get-total-donations` - Total donations for a community
+- `get-total-spending` - Total spending for a community
+
+## Data Structures
+
+### Record
+```clarity
+{
+  record-id: uint,
+  community-id: uint,
+  record-type: (string-ascii 20), ;; "donation" or "spending"
+  amount: uint,
+  description: (string-utf8 256),
+  submitter: principal,
+  timestamp: uint,
+  verified: bool
+}
+```
+
+### Community
+```clarity
+{
+  community-id: uint,
+  name: (string-utf8 100),
+  admin: principal,
+  created-at: uint,
+  active: bool
+}
+```
+
+### Member
+```clarity
+{
+  member-address: principal,
+  community-id: uint,
+  role: (string-ascii 20), ;; "admin", "contributor", "viewer"
+  joined-at: uint
+}
+```
 
 ## Testing
 
@@ -108,6 +156,14 @@ Coming soon after testing phase.
 - **`vitest`** (v3.2.4) - Test runner
 - **`vitest-environment-clarinet`** (v3.0.2) - Clarinet test environment
 
+## Security Considerations
+
+- No sensitive personal data stored on-chain
+- Only transaction hashes and public records
+- Role-based access control
+- Admin functions protected
+- Record immutability after submission
+
 ## Resources
 
 - [Stacks Documentation](https://docs.stacks.co)
@@ -116,4 +172,8 @@ Coming soon after testing phase.
 
 ## Status
 
-🚧 **In Development** - Game contract coming soon!
+🚧 **In Development** - Core ledger contract coming soon!
+
+---
+
+Building transparent, accountable infrastructure for communities on Bitcoin.

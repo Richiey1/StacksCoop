@@ -1,10 +1,10 @@
-# StacksTacToe Frontend
+# StacksCoop Frontend
 
-A Next.js frontend application for StacksTacToe - a decentralized Tic-Tac-Toe game built on the Stacks blockchain.
+A Next.js frontend application for StacksCoop - a Bitcoin-Anchored Community Transparency Ledger built on the Stacks blockchain.
 
 ## Overview
 
-StacksTacToe brings the classic game of Tic-Tac-Toe to the blockchain, allowing players to compete in provably fair matches with on-chain game state and logic.
+StacksCoop provides communities, cooperatives, and civic organizations with a decentralized platform to record donations, track spending, and manage community projects with full transparency anchored to Bitcoin.
 
 ## Dependencies
 
@@ -17,7 +17,7 @@ StacksTacToe brings the classic game of Tic-Tac-Toe to the blockchain, allowing 
 
 - **`@stacks/transactions`** (v7.2.0) - Transaction building and signing
   - Build contract call transactions
-  - Create Clarity values for game moves
+  - Create Clarity values for ledger records
   - Transaction utilities
 
 ### Core Packages
@@ -27,29 +27,21 @@ StacksTacToe brings the classic game of Tic-Tac-Toe to the blockchain, allowing 
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Styling
 
-## Features (Coming Soon)
+## Features
 
-- 🎮 **On-chain Game Logic**: All game moves verified on the blockchain
-- 👥 **Multiplayer**: Challenge other players to matches
-- 🏆 **Provably Fair**: Transparent game state and outcomes
-- 💰 **Optional Wagering**: Play for fun or with STX stakes
-- 📊 **Game History**: Track your wins, losses, and draws
-
-## Deployed Contract
-
-**Mainnet:**
-- **Contract**: `SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF.stackstactoe-alpha`
-- **Network**: Stacks Mainnet
-- **Clarity Version**: 3
-
-The frontend is configured to interact with this contract via `frontend/config/constants.ts`.
+- 📝 **Record Submissions**: Submit donations, spending, and project records on-chain
+- 🔍 **Public Verification**: Anyone can verify community transactions
+- 👥 **Role-Based Access**: Manage community members and contributors
+- 📊 **Transaction History**: View complete audit trail of all records
+- 🏛️ **Multi-Community**: Support for multiple organizations on one platform
+- 🔐 **Secure Authentication**: Wallet-based authentication for contributors
 
 ## Project Structure
 
 ```
-StacksTacToe/
+StacksCoop/
 ├── smartcontract/       # Clarity smart contracts
-│   ├── contracts/       # Game contract
+│   ├── contracts/       # Ledger contract
 │   ├── tests/           # Contract tests
 │   └── README.md        # Contract documentation
 └── frontend/            # Next.js frontend
@@ -88,6 +80,26 @@ npm start
 - A Stacks wallet (Leather or Xverse)
 - Git
 
+## Key Components
+
+### Record Management
+- Submit new community records
+- View all transactions
+- Filter and search records
+- Export transaction history
+
+### Community Dashboard
+- View community overview
+- Track total donations and spending
+- Monitor active projects
+- Member directory
+
+### Admin Panel
+- Add/remove community members
+- Assign roles and permissions
+- Configure community settings
+- Manage approvals
+
 ## Resources
 
 - [Stacks Documentation](https://docs.stacks.co)
@@ -96,4 +108,8 @@ npm start
 
 ## Status
 
-🚧 **In Development** - Game features coming soon!
+🚧 **In Development** - Core ledger features coming soon!
+
+---
+
+Built for community transparency and accountability on Bitcoin.

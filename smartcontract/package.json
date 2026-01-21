@@ -1,7 +1,7 @@
 {
-  "name": "stackstactoe-contracts",
+  "name": "stackscoop-contracts",
   "version": "1.0.0",
-  "description": "Smart contracts for StacksTacToe - A decentralized Tic-Tac-Toe game on Stacks",
+  "description": "Smart contracts for StacksCoop - Bitcoin-Anchored Community Transparency Ledger",
   "type": "module",
   "private": true,
   "scripts": {

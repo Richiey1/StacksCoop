@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "StacksTacToe - Decentralized Tic-Tac-Toe",
-  description: "Play Tic-Tac-Toe on the Stacks blockchain",
+  title: "StacksCoop - Community Transparency Ledger",
+  description: "Bitcoin-anchored transparency for community organizations, cooperatives, and civic groups",
 };
 
 export default function RootLayout({

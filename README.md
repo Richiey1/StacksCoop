@@ -1,48 +1,75 @@
-# StacksTacToe
-
-A decentralized **Player vs Player (PvP)** Tic-Tac-Toe game built on the Stacks blockchain, where players compete in winner-takes-all matches with real stakes.
+# StacksCoop
+**Bitcoin-Anchored Community Transparency Ledger**
 
 ## Overview
 
-StacksTacToe is a **competitive PvP betting game** that brings the classic Tic-Tac-Toe to Web3. Players can challenge each other to matches with cryptocurrency wagers, where the winner takes all. All game moves and outcomes are verified and stored on the Stacks blockchain, ensuring complete fairness and transparency.
+StacksCoop is a decentralized public ledger designed for community transparency and accountability. Built on Stacks (Bitcoin L2), it allows local organizations, cooperatives, NGOs, and civic groups to:
 
-### How It Works
+- Record donations and spending
+- Track community projects
+- Ensure transparent governance
 
-1. **Create a Game** - Set your wager amount and choose your token
-2. **Challenge Opponent** - Wait for another player to accept your bet
-3. **Play to Win** - Make your moves on-chain
-4. **Winner Takes All** - The victor claims the entire pot automatically
+By anchoring data to Bitcoin, StacksCoop provides immutable, verifiable, and tamper-proof records that communities can trust.
 
-### Supported Tokens
+**This is not a financial speculation project.**  
+It is a trust and transparency primitive for civic and cooperative use cases.
 
-- **STX** (Default) - Stacks native token
-- **sBTC** - Bitcoin on Stacks
-- **BTC** - Bitcoin (via cross-chain bridge)
-- **USDCx** - USDC on Stacks
+## Problem
 
-## Deployed Contract
+Across communities — especially in Africa:
 
-**Mainnet Contract:**
-- **Address**: `SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF.stackstactoe-alpha`
-- **Network**: Stacks Mainnet
-- **Clarity Version**: 3
-- **Explorer**: [View on Explorer](https://explorer.hiro.so/txid/SP258BY8D71JCTV73A4V3ADPHCVWSBEM6G4FETPYF.stackstactoe-alpha?chain=mainnet)
+- Donations and funds are often mismanaged or opaque
+- Community project spending lacks verifiable records
+- Local organizations face trust deficits
+- Traditional bookkeeping is fragmented, error-prone, or offline
 
-## Features (Coming Soon)
+There is no neutral, transparent, and permanent infrastructure for community finance and project reporting.
 
-- 🎮 **PvP Betting** - Winner-takes-all matches with real stakes
-- � **Multi-Token Support** - Bet with STX, sBTC, BTC, or USDCx
-- 🏆 **Provably Fair** - All moves verified on-chain, no cheating possible
-- ⚡ **Instant Payouts** - Winners receive funds automatically via smart contract
-- � **Open Challenges** - Create public games or challenge specific players
-- 📊 **Leaderboard** - Track top players and biggest wins
-- 🔐 **Secure Wallet Integration** - Connect with Leather or Xverse wallets
-- 📈 **Game History** - Complete record of all your matches on-chain
+## The Solution
+
+StacksCoop creates on-chain, verifiable records of:
+
+- Community project funding
+- Donations and grants
+- Spending and disbursement
+
+Each record is:
+
+- Cryptographically verifiable
+- Owned by the organization or cooperative
+- Anchored permanently on Bitcoin via Stacks
+
+**No sensitive personal data is stored on-chain** — only hashed proofs and transactions.
+
+## Core Features
+
+- Public record of contributions and spending
+- Immutable project ledger
+- Event emission for indexing and analytics
+- Optional role-based access for trusted contributors
+- Transparent reporting for communities, donors, and members
+
+## Use Cases
+
+✅ Town unions tracking communal funds  
+✅ Religious organizations tracking donations  
+✅ Local NGOs reporting spending  
+✅ Cooperative groups managing shared projects  
+✅ Civic projects with public accountability
+
+## Why Bitcoin & Stacks
+
+- **Bitcoin** = permanent trust layer
+- **Stacks** enables smart contracts without compromising Bitcoin security
+- Transparency and accountability are anchored immutably
+- Communities gain long-term verifiable records
+
+**Short-lived ledgers don't build trust — permanent ones do.**
 
 ## Project Structure
 
 ```
-StacksTacToe/
+StacksCoop/
 ├── frontend/          # Next.js frontend application
 │   ├── app/          # Next.js App Router pages
 │   ├── components/   # React components
@@ -50,7 +77,7 @@ StacksTacToe/
 │   └── lib/          # Utility functions
 │
 ├── smartcontract/    # Clarity smart contracts
-│   ├── contracts/    # Game contract source
+│   ├── contracts/    # Ledger contract source
 │   ├── tests/        # Contract tests
 │   └── settings/     # Network configurations
 │
@@ -85,8 +112,8 @@ StacksTacToe/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Richiey1/StacksTacToe.git
-   cd StacksTacToe
+   git clone https://github.com/yourusername/StacksCoop.git
+   cd StacksCoop
    ```
 
 2. **Set up the frontend**
@@ -140,12 +167,30 @@ clarinet deployments generate --testnet --low-cost
 clarinet deployment apply -p deployments/default.testnet-plan.yaml
 ```
 
-## Documentation
+## Impact
 
-- **Frontend Documentation**: See [frontend/README.md](./frontend/README.md)
-- **Smart Contract Documentation**: See [smartcontract/README.md](./smartcontract/README.md)
-- **Stacks Integration Guide**: See [frontend/stacks-frontend-integration-guide.md](./frontend/stacks-frontend-integration-guide.md)
-- **Clarity Development Guide**: See [smartcontract/clarity-smartcontract-guide.md](./smartcontract/clarity-smartcontract-guide.md)
+- Promotes accountability and trust
+- Reduces fund mismanagement and corruption
+- Strengthens community governance
+- Encourages transparency in donations and projects
+- Builds Bitcoin-native civic infrastructure
+
+## Roadmap
+
+### Phase 1:
+- Core ledger smart contract
+- Record donations, spending, projects
+- Public verification functions
+
+### Phase 2:
+- Role-based access for contributors
+- Event indexing for dashboards
+- Optional visual frontend
+
+### Phase 3:
+- Multi-community support
+- Cross-platform integration (NGO portals, cooperatives)
+- Long-term anchoring improvements
 
 ## Resources
 
@@ -165,13 +210,8 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## Status
 
-🚧 **In Development** - This project is actively being built. Game features coming soon!
-
-## Contact
-
-- GitHub: [@Richiey1](https://github.com/Richiey1)
-- Repository: [StacksTacToe](https://github.com/Richiey1/StacksTacToe)
+🚧 **In Development** - This project is actively being built. Core features coming soon!
 
 ---
 
-Built with ❤️ on the Stacks blockchain
+Built with ❤️ on the Stacks blockchain for community transparency and accountability.

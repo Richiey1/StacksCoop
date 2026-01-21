@@ -1,12 +1,12 @@
 [project]
-name = 'stackstactoe'
-description = 'Decentralized Tic-Tac-Toe game on Stacks blockchain'
+name = 'stackscoop'
+description = 'Bitcoin-Anchored Community Transparency Ledger on Stacks blockchain'
 authors = []
 telemetry = true
 cache_dir = './.cache'
 
-[contracts.stackstactoe-alpha]
-path = 'contracts/stackstactoe.clar'
+[contracts.stackscoop]
+path = 'contracts/stackscoop.clar'
 clarity_version = 3
 epoch = 'latest'
 

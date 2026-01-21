@@ -1,7 +1,7 @@
 {
-  "name": "stackstactoe-frontend",
+  "name": "stackscoop-frontend",
   "version": "0.1.0",
-  "description": "Frontend for StacksTacToe - A decentralized Tic-Tac-Toe game on Stacks blockchain",
+  "description": "Frontend for StacksCoop - Bitcoin-Anchored Community Transparency Ledger",
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",

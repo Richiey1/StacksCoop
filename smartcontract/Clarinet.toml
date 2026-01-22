@@ -7,8 +7,8 @@ cache_dir = './.cache'
 
 [contracts.stackscoop]
 path = 'contracts/stackscoop.clar'
-clarity_version = 3
-epoch = 'latest'
+clarity_version = 4
+epoch = '3.3'
 
 [repl.analysis]
 passes = ['check_checker']

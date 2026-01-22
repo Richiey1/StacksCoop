@@ -218,6 +218,9 @@
         
         ;; Member must not already exist
         (asserts! (is-none existing-member) ERR_ALREADY_EXISTS)
+
+        ;; Cannot add yourself (admin is already added)
+        (asserts! (not (is-eq member tx-sender)) ERR_UNAUTHORIZED)
         
         ;; Validate role
         (asserts! (or 
@@ -329,6 +332,9 @@
         
         ;; Validate description
         (asserts! (> (len description) u0) ERR_EMPTY_DESCRIPTION)
+
+        ;; Validate project-id if present
+        (asserts! (match project-id pid (> pid u0) true) ERR_INVALID_AMOUNT)
         
         ;; Create record
         (map-set records new-record-id {

@@ -43,7 +43,7 @@
 (define-constant ERR_INVALID_RECORD_TYPE (err u107))
 (define-constant ERR_EMPTY_DESCRIPTION (err u108))
 (define-constant ERR_INVALID_STATUS (err u109))
-(define-constant ERR_NOT_MEMBER (err u110))
+
 
 ;; ============================================
 ;; Data Variables
@@ -52,9 +52,6 @@
 ;; Counters
 (define-data-var community-id-counter uint u0)
 (define-data-var record-id-counter uint u0)
-
-;; Contract configuration
-(define-data-var contract-paused bool false)
 
 ;; ============================================
 ;; Data Maps

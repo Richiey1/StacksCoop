@@ -39,5 +39,5 @@ plan:
             contract-name: stackscoop
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/stackscoop.clar
-            clarity-version: 3
+            clarity-version: 4
       epoch: "3.3"

@@ -23,11 +23,9 @@
 ;; Record status
 (define-constant STATUS_PENDING u0)
 (define-constant STATUS_VERIFIED u1)
-(define-constant STATUS_REJECTED u2)
 
 ;; Community status
 (define-constant COMMUNITY_ACTIVE u1)
-(define-constant COMMUNITY_INACTIVE u0)
 
 ;; ============================================
 ;; Error Codes

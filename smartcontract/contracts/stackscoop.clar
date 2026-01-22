@@ -43,6 +43,7 @@
 (define-constant ERR_INVALID_RECORD_TYPE (err u107))
 (define-constant ERR_EMPTY_DESCRIPTION (err u108))
 (define-constant ERR_INVALID_STATUS (err u109))
+(define-constant ERR_INVALID_NAME (err u110))
 
 
 ;; ============================================
@@ -171,6 +172,9 @@
             (new-id (+ (var-get community-id-counter) u1))
             (existing-id (map-get? community-names name))
         )
+        ;; Check name length
+        (asserts! (> (len name) u0) ERR_INVALID_NAME)
+
         ;; Check if name already exists
         (asserts! (is-none existing-id) ERR_ALREADY_EXISTS)
         

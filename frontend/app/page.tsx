@@ -1,39 +1,13 @@
 "use client";
 
-import { useState, Suspense, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { HeroCarousel } from "@/components/common/HeroCarousel";
-import { TabNavigation } from "@/components/common/TabNavigation";
-import { GamesContent } from "@/components/common/GamesContent";
-import { CreateGameContent } from "@/components/common/CreateGameContent";
-import { LeaderboardContent } from "@/components/common/LeaderboardContent";
-import { ChallengesContent } from "@/components/common/ChallengesContent";
-import { AdminPanel } from "@/components/admin/AdminPanel";
-import { TabType } from "@/components/common/TabNavigation";
+import { useState, Suspense } from "react";
+import { CommunityDashboard } from "@/components/community/CommunityDashboard";
 import { useStacks } from "@/contexts/StacksProvider";
 import { CONTRACT_ADDRESS } from "@/lib/stacksConfig";
 
-
-
 function HomeContent() {
-  const [activeTab, setActiveTab] = useState<TabType | null>("games");
   const { address } = useStacks();
-  const isAdmin = address && (address === CONTRACT_ADDRESS || address === "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM");
-  
-  const searchParams = useSearchParams();
-  const gameIdParam = searchParams.get('gameId');
-  const [initialGameId, setInitialGameId] = useState<bigint | null>(null);
-
-  useEffect(() => {
-    if (gameIdParam) {
-      try {
-        setInitialGameId(BigInt(gameIdParam));
-        setActiveTab("games");
-      } catch (e) {
-        console.error("Invalid game ID param");
-      }
-    }
-  }, [gameIdParam]);
+  const [activeCommunityId, setActiveCommunityId] = useState<number>(1); // Default to community 1 for MVP
 
   return (
     <div 
@@ -53,34 +27,18 @@ function HomeContent() {
       ></div>
       
       {/* Content with proper z-index */}
-      <div className="relative z-10 max-w-7xl w-full space-y-6 sm:space-y-8">
-        {/* Hero Carousel */}
-        <div className="mt-4 sm:mt-6 md:mt-8 lg:mt-12">
-          <HeroCarousel onTabChange={setActiveTab} />
+      <div className="relative z-10 max-w-7xl w-full space-y-6 sm:space-y-8 mt-8">
+        <div className="flex flex-col items-center justify-center text-center space-y-4 mb-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+                Community <span className="text-orange-500">Ledger</span>
+            </h1>
+            <p className="text-gray-400 max-w-2xl text-lg">
+                Transparent, immutable, and verifiable records for your community organization.
+                Anchored on Bitcoin via Stacks.
+            </p>
         </div>
 
-        {/* Sidebar + Content Layout */}
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-          {/* Sidebar Navigation */}
-          <aside className="md:w-64 flex-shrink-0">
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-4">
-              <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} showAdmin={!!isAdmin} />
-            </div>
-          </aside>
-
-          {/* Main Content Area */}
-          <main className="flex-1 min-w-0">
-            {activeTab && (
-              <>
-                {activeTab === "games" && <GamesContent onTabChange={setActiveTab} initialGameId={initialGameId} />}
-                {activeTab === "create" && <CreateGameContent />}
-                {activeTab === "leaderboard" && <LeaderboardContent />}
-                {activeTab === "challenges" && <ChallengesContent />}
-                {activeTab === "admin" && isAdmin && <AdminPanel />}
-              </>
-            )}
-          </main>
-        </div>
+        <CommunityDashboard communityId={activeCommunityId} />
       </div>
     </div>
   );

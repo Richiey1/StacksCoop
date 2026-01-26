@@ -190,6 +190,73 @@ Integrate SIP-010 token support for donations (currently STX/Micro-STX only impl
 
 ---
 
+### Issue #10: Multi-Asset Donation Support (STX, sBTC, USDCx)
+
+**Status:** ❌ PENDING
+
+**Labels:** `smart-contracts`, `feature`, `payments`, `defi`
+
+**Priority:** HIGH
+
+**Description:**
+Extend the donation and record submission system to support real on-chain transfers for multiple assets, including native STX and SIP-010 tokens such as sBTC and USDCx.
+
+Currently, donation records are tracked logically but do not enforce or execute actual asset transfers on-chain. This issue introduces explicit asset movement and standardized multi-asset handling.
+
+**Acceptance Criteria:**
+
+- [ ] Explicit STX transfers using `stx-transfer?` during donation submissions
+- [ ] SIP-010 token transfer support for:
+  - [ ] sBTC
+  - [ ] USDCx
+- [ ] Asset-type parameter added to `submit-record` (e.g. `stx`, `sip010`)
+- [ ] Token contract trait verification before accepting SIP-010 transfers
+- [ ] Record storage updated to include:
+  - asset type
+
+--------
+
+### Issue #11: Admin-Configurable Token Preferences per Community
+
+**Status:** ❌ PENDING
+
+**Labels:** `smart-contracts`, `governance`, `security`, `defi`
+
+**Priority:** HIGH
+
+**Description:**
+Allow authorized community admins to configure which supported tokens their community accepts for donations, spending, and project records.
+
+This introduces a two-layer token system:
+1. A global allowlist of protocol-supported tokens
+2. Per-community token configuration managed by admins
+
+**Acceptance Criteria:**
+
+- [ ] Maintain a global allowlist of supported tokens (protocol-level)
+- [ ] Only Contract Owner / Super Admin can:
+  - [ ] Add or remove tokens from the global allowlist
+- [ ] Each community must maintain its own list of enabled tokens
+- [ ] Only Community Admins can:
+  - [ ] Enable a supported token for their community
+  - [ ] Disable a token for their community
+- [ ] `submit-record` must:
+  - [ ] Verify token is globally supported
+  - [ ] Verify token is enabled for the target community
+- [ ] Read-only helpers:
+  - [ ] `is-token-supported`
+  - [ ] `is-token-enabled-for-community`
+  - [ ] `get-community-enabled-tokens`
+
+**Implementation Notes:**
+
+- STX may be enabled by default for all communities
+- SIP-010 tokens (sBTC, USDCx) must implement required traits
+- Token metadata may include:
+  - symbol
+  - asset
+
+
 ## 📝 Issue Template
 
 When creating new issues, use this template:

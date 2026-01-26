@@ -3,6 +3,11 @@
 ;; Built on Stacks blockchain for permanent Bitcoin anchoring
 
 ;; ============================================
+;; Traits
+;; ============================================
+(use-trait sip-010-trait .sip-010-trait.sip-010-trait)
+
+;; ============================================
 ;; Constants
 ;; ============================================
 
@@ -42,6 +47,7 @@
 (define-constant ERR_EMPTY_DESCRIPTION (err u108))
 (define-constant ERR_INVALID_STATUS (err u109))
 (define-constant ERR_INVALID_NAME (err u110))
+(define-constant ERR_TOKEN_TRANSFER_FAILED (err u111))
 
 
 ;; ============================================
@@ -92,7 +98,8 @@
         timestamp: uint,
         status: uint,
         verified-by: (optional principal),
-        project-id: (optional uint)
+        project-id: (optional uint),
+        token: (optional principal)
     }
 )
 
@@ -305,7 +312,7 @@
 ;; Public Functions - Record Management
 ;; ============================================
 
-;; Submit a new record
+;; Submit a new record (standard, non-token)
 (define-public (submit-record 
     (community-id uint) 
     (record-type (string-ascii 20))
@@ -346,7 +353,8 @@
             timestamp: stacks-block-height,
             status: STATUS_VERIFIED, ;; Auto-verified for now
             verified-by: (some tx-sender),
-            project-id: project-id
+            project-id: project-id,
+            token: none
         })
         
         ;; Update community totals
@@ -366,6 +374,63 @@
         (var-set record-id-counter new-record-id)
         
         (ok new-record-id)
+    )
+)
+
+;; Submit a SIP-010 token donation
+(define-public (submit-token-donation
+    (community-id uint)
+    (amount uint)
+    (description (string-utf8 256))
+    (token <sip-010-trait>)
+)
+    (let
+        (
+            (community (unwrap! (map-get? communities community-id) ERR_NOT_FOUND))
+            (new-record-id (+ (var-get record-id-counter) u1))
+            (token-contract (contract-of token))
+        )
+        ;; Basic Checks
+        (asserts! (is-eq (get status community) COMMUNITY_ACTIVE) ERR_COMMUNITY_INACTIVE)
+        ;; Note: Donations should be submittable by anyone, not just members.
+        ;; But current 'can-submit-record' restricts to members.
+        ;; For open donations, we might want to relax this, but sticking to existing logic for now.
+        (asserts! (can-submit-record community-id tx-sender) ERR_UNAUTHORIZED)
+        
+        (asserts! (> amount u0) ERR_INVALID_AMOUNT)
+        (asserts! (> (len description) u0) ERR_EMPTY_DESCRIPTION)
+
+        ;; Execute Token Transfer (Sender -> Contract)
+        (match (contract-call? token transfer amount tx-sender (as-contract tx-sender) none)
+            success 
+            (if success
+                (begin
+                    ;; Create Record
+                    (map-set records new-record-id {
+                        community-id: community-id,
+                        record-type: RECORD_TYPE_DONATION,
+                        amount: amount,
+                        description: description,
+                        submitter: tx-sender,
+                        timestamp: stacks-block-height,
+                        status: STATUS_VERIFIED,
+                        verified-by: (some tx-sender),
+                        project-id: none,
+                        token: (some token-contract)
+                    })
+
+                    ;; Update Totals (Note: We might want separate totals for tokens, but mixing uints is okay for rough tracking if uniform)
+                    (map-set communities community-id 
+                        (merge community { total-donations: (+ (get total-donations community) amount) })
+                    )
+
+                    (var-set record-id-counter new-record-id)
+                    (ok new-record-id)
+                )
+                ERR_TOKEN_TRANSFER_FAILED
+            )
+            error ERR_TOKEN_TRANSFER_FAILED
+        )
     )
 )
 

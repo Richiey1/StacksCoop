@@ -20,6 +20,11 @@
 (define-constant RECORD_TYPE_PROJECT "project")
 (define-constant RECORD_TYPE_GRANT "grant")
 
+;; Asset types
+(define-constant ASSET_STX "stx")
+(define-constant ASSET_SIP010 "sip010")
+(define-constant ASSET_OFFCHAIN "offchain")
+
 ;; Member roles
 (define-constant ROLE_ADMIN "admin")
 (define-constant ROLE_CONTRIBUTOR "contributor")
@@ -48,6 +53,7 @@
 (define-constant ERR_INVALID_STATUS (err u109))
 (define-constant ERR_INVALID_NAME (err u110))
 (define-constant ERR_TOKEN_TRANSFER_FAILED (err u111))
+(define-constant ERR_STX_TRANSFER_FAILED (err u112))
 
 
 ;; ============================================
@@ -92,6 +98,7 @@
     {
         community-id: uint,
         record-type: (string-ascii 20),
+        asset-type: (string-ascii 10),
         amount: uint,
         description: (string-utf8 256),
         submitter: principal,
@@ -312,7 +319,7 @@
 ;; Public Functions - Record Management
 ;; ============================================
 
-;; Submit a new record (standard, non-token)
+;; Submit a new record (standard/offchain legacy support)
 (define-public (submit-record 
     (community-id uint) 
     (record-type (string-ascii 20))
@@ -347,6 +354,7 @@
         (map-set records new-record-id {
             community-id: community-id,
             record-type: record-type,
+            asset-type: ASSET_OFFCHAIN,
             amount: amount,
             description: description,
             submitter: tx-sender,
@@ -357,7 +365,7 @@
             token: none
         })
         
-        ;; Update community totals
+        ;; Update community totals (still tracked for offchain for now)
         (if (is-eq record-type RECORD_TYPE_DONATION)
             (map-set communities community-id 
                 (merge community { total-donations: (+ (get total-donations community) amount) })
@@ -366,7 +374,7 @@
                 (map-set communities community-id 
                     (merge community { total-spending: (+ (get total-spending community) amount) })
                 )
-                true ;; Other record types don't affect totals
+                true 
             )
         )
         
@@ -374,6 +382,54 @@
         (var-set record-id-counter new-record-id)
         
         (ok new-record-id)
+    )
+)
+
+;; Donate STX with explicit transfer
+(define-public (donate-stx
+    (community-id uint)
+    (amount uint)
+    (description (string-utf8 256))
+)
+    (let
+        (
+            (community (unwrap! (map-get? communities community-id) ERR_NOT_FOUND))
+            (new-record-id (+ (var-get record-id-counter) u1))
+        )
+        (asserts! (is-eq (get status community) COMMUNITY_ACTIVE) ERR_COMMUNITY_INACTIVE)
+        (asserts! (can-submit-record community-id tx-sender) ERR_UNAUTHORIZED)
+        (asserts! (> amount u0) ERR_INVALID_AMOUNT)
+        (asserts! (> (len description) u0) ERR_EMPTY_DESCRIPTION)
+
+        ;; Execute STX Transfer (Sender -> Contract)
+        (match (stx-transfer? amount tx-sender (as-contract tx-sender))
+            success
+            (begin
+                ;; Create Record
+                (map-set records new-record-id {
+                    community-id: community-id,
+                    record-type: RECORD_TYPE_DONATION,
+                    asset-type: ASSET_STX,
+                    amount: amount,
+                    description: description,
+                    submitter: tx-sender,
+                    timestamp: stacks-block-height,
+                    status: STATUS_VERIFIED,
+                    verified-by: (some tx-sender),
+                    project-id: none,
+                    token: none
+                })
+
+                ;; Update Totals
+                (map-set communities community-id 
+                    (merge community { total-donations: (+ (get total-donations community) amount) })
+                )
+
+                (var-set record-id-counter new-record-id)
+                (ok new-record-id)
+            )
+            error ERR_STX_TRANSFER_FAILED
+        )
     )
 )
 
@@ -392,9 +448,6 @@
         )
         ;; Basic Checks
         (asserts! (is-eq (get status community) COMMUNITY_ACTIVE) ERR_COMMUNITY_INACTIVE)
-        ;; Note: Donations should be submittable by anyone, not just members.
-        ;; But current 'can-submit-record' restricts to members.
-        ;; For open donations, we might want to relax this, but sticking to existing logic for now.
         (asserts! (can-submit-record community-id tx-sender) ERR_UNAUTHORIZED)
         
         (asserts! (> amount u0) ERR_INVALID_AMOUNT)
@@ -409,6 +462,7 @@
                     (map-set records new-record-id {
                         community-id: community-id,
                         record-type: RECORD_TYPE_DONATION,
+                        asset-type: ASSET_SIP010,
                         amount: amount,
                         description: description,
                         submitter: tx-sender,
@@ -419,7 +473,7 @@
                         token: (some token-contract)
                     })
 
-                    ;; Update Totals (Note: We might want separate totals for tokens, but mixing uints is okay for rough tracking if uniform)
+                    ;; Update Totals
                     (map-set communities community-id 
                         (merge community { total-donations: (+ (get total-donations community) amount) })
                     )

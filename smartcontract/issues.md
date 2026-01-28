@@ -114,6 +114,45 @@ Comprehensive unit tests for all contract functions.
 
 ---
 
+### Issue #9: Token Integration (SIP-010)
+**Status:** ✅ COMPLETED
+**Labels:** `smart-contracts`, `feature`, `defi`
+**Priority:** LOW
+
+**Description:**
+Integrate SIP-010 token support for donations (currently STX/Micro-STX only implicitly).
+
+**Acceptance Criteria:**
+- [x] Add support for SIP-010 token transfers in `submit-record`
+- [x] Handle token transfer events
+- [x] Verify token traits
+
+**Implementation Notes:**
+- `sip010-token-mock.clar` exists but is not fully integrated into `stackscoop.clar` yet.
+
+---
+
+### Issue #10: Multi-Asset Donation Support (STX, sBTC, USDCx)
+
+**Status:** ✅ COMPLETED
+
+**Labels:** `smart-contracts`, `feature`, `payments`, `defi`
+
+**Priority:** HIGH
+
+**Description:**
+Extend the donation and record submission system to support real on-chain transfers for multiple assets, including native STX and SIP-010 tokens such as sBTC and USDCx.
+
+**Acceptance Criteria:**
+
+- [x] Explicit STX transfers using `stx-transfer?` during donation submissions
+- [x] SIP-010 token transfer support for sBTC/USDCx
+- [x] Asset-type parameter added to record storage (e.g. `stx`, `sip010`)
+- [x] Token contract trait verification before accepting SIP-010 transfers
+- [x] Record storage updated to include asset type
+
+---
+
 ## ❌ Pending Issues
 
 ### Issue #6: Security Audit & Verification
@@ -172,50 +211,6 @@ Analyze and optimize contract execution cost.
 
 ---
 
-### Issue #9: Token Integration (SIP-010)
-**Status:** ✅ COMPLETED
-**Labels:** `smart-contracts`, `feature`, `defi`
-**Priority:** LOW
-
-**Description:**
-Integrate SIP-010 token support for donations (currently STX/Micro-STX only implicitly).
-
-**Acceptance Criteria:**
-- [x] Add support for SIP-010 token transfers in `submit-record`
-- [x] Handle token transfer events
-- [x] Verify token traits
-
-**Implementation Notes:**
-- `sip010-token-mock.clar` exists but is not fully integrated into `stackscoop.clar` yet.
-
----
-
-### Issue #10: Multi-Asset Donation Support (STX, sBTC, USDCx)
-
-**Status:** ❌ PENDING
-
-**Labels:** `smart-contracts`, `feature`, `payments`, `defi`
-
-**Priority:** HIGH
-
-**Description:**
-Extend the donation and record submission system to support real on-chain transfers for multiple assets, including native STX and SIP-010 tokens such as sBTC and USDCx.
-
-Currently, donation records are tracked logically but do not enforce or execute actual asset transfers on-chain. This issue introduces explicit asset movement and standardized multi-asset handling.
-
-**Acceptance Criteria:**
-
-- [ ] Explicit STX transfers using `stx-transfer?` during donation submissions
-- [ ] SIP-010 token transfer support for:
-  - [ ] sBTC
-  - [ ] USDCx
-- [ ] Asset-type parameter added to `submit-record` (e.g. `stx`, `sip010`)
-- [ ] Token contract trait verification before accepting SIP-010 transfers
-- [ ] Record storage updated to include:
-  - asset type
-
---------
-
 ### Issue #11: Admin-Configurable Token Preferences per Community
 
 **Status:** ❌ PENDING
@@ -256,6 +251,7 @@ This introduces a two-layer token system:
   - symbol
   - asset
 
+---
 
 ## 📝 Issue Template
 

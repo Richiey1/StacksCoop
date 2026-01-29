@@ -54,6 +54,8 @@
 (define-constant ERR_INVALID_NAME (err u110))
 (define-constant ERR_TOKEN_TRANSFER_FAILED (err u111))
 (define-constant ERR_STX_TRANSFER_FAILED (err u112))
+(define-constant ERR_TOKEN_NOT_SUPPORTED (err u113))
+(define-constant ERR_TOKEN_NOT_ENABLED (err u114))
 
 
 ;; ============================================
@@ -112,6 +114,15 @@
 
 ;; Community name registry (for uniqueness)
 (define-map community-names (string-utf8 100) uint)
+
+;; Global supported tokens (protocol-level allowlist)
+(define-map protocol-supported-tokens principal bool)
+
+;; Per-community enabled tokens
+(define-map community-token-preferences 
+    { community-id: uint, token: principal } 
+    bool
+)
 
 ;; ============================================
 ;; Initialization
@@ -174,6 +185,19 @@
 )
 
 ;; ============================================
+;; Public Functions - Protocol Governance
+;; ============================================
+
+;; Add or remove a token from the global protocol allowlist (Owner only)
+(define-public (set-protocol-token-support (token principal) (enabled bool))
+    (begin
+        (asserts! (is-eq tx-sender CONTRACT_OWNER) ERR_UNAUTHORIZED)
+        (map-set protocol-supported-tokens token enabled)
+        (ok true)
+    )
+)
+
+;; ============================================
 ;; Public Functions - Community Management
 ;; ============================================
 
@@ -214,6 +238,19 @@
         (var-set community-id-counter new-id)
         
         (ok new-id)
+    )
+)
+
+;; Configure community token preference (Community Admin only)
+(define-public (set-community-token-preference (community-id uint) (token principal) (enabled bool))
+    (begin
+        ;; Verify community admin
+        (asserts! (is-community-admin community-id tx-sender) ERR_NOT_ADMIN)
+        ;; Verify token is globally supported
+        (asserts! (default-to false (map-get? protocol-supported-tokens token)) ERR_TOKEN_NOT_SUPPORTED)
+        
+        (map-set community-token-preferences { community-id: community-id, token: token } enabled)
+        (ok true)
     )
 )
 
@@ -450,6 +487,11 @@
         (asserts! (is-eq (get status community) COMMUNITY_ACTIVE) ERR_COMMUNITY_INACTIVE)
         (asserts! (can-submit-record community-id tx-sender) ERR_UNAUTHORIZED)
         
+        ;; Verify token is globally supported
+        (asserts! (default-to false (map-get? protocol-supported-tokens token-contract)) ERR_TOKEN_NOT_SUPPORTED)
+        ;; Verify token is enabled for this community
+        (asserts! (default-to false (map-get? community-token-preferences { community-id: community-id, token: token-contract })) ERR_TOKEN_NOT_ENABLED)
+
         (asserts! (> amount u0) ERR_INVALID_AMOUNT)
         (asserts! (> (len description) u0) ERR_EMPTY_DESCRIPTION)
 
@@ -515,6 +557,16 @@
 ;; ============================================
 ;; Read-Only Functions
 ;; ============================================
+
+;; Check if token is globally supported
+(define-read-only (is-token-globally-supported (token principal))
+    (default-to false (map-get? protocol-supported-tokens token))
+)
+
+;; Check if token is enabled for community
+(define-read-only (is-token-enabled-for-community (community-id uint) (token principal))
+    (default-to false (map-get? community-token-preferences { community-id: community-id, token: token }))
+)
 
 ;; Get community details
 (define-read-only (get-community (community-id uint))

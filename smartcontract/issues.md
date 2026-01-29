@@ -212,44 +212,20 @@ Analyze and optimize contract execution cost.
 ---
 
 ### Issue #11: Admin-Configurable Token Preferences per Community
-
-**Status:** ❌ PENDING
-
+**Status:** ✅ COMPLETED
 **Labels:** `smart-contracts`, `governance`, `security`, `defi`
-
 **Priority:** HIGH
 
 **Description:**
 Allow authorized community admins to configure which supported tokens their community accepts for donations, spending, and project records.
 
-This introduces a two-layer token system:
-1. A global allowlist of protocol-supported tokens
-2. Per-community token configuration managed by admins
-
 **Acceptance Criteria:**
-
-- [ ] Maintain a global allowlist of supported tokens (protocol-level)
-- [ ] Only Contract Owner / Super Admin can:
-  - [ ] Add or remove tokens from the global allowlist
-- [ ] Each community must maintain its own list of enabled tokens
-- [ ] Only Community Admins can:
-  - [ ] Enable a supported token for their community
-  - [ ] Disable a token for their community
-- [ ] `submit-record` must:
-  - [ ] Verify token is globally supported
-  - [ ] Verify token is enabled for the target community
-- [ ] Read-only helpers:
-  - [ ] `is-token-supported`
-  - [ ] `is-token-enabled-for-community`
-  - [ ] `get-community-enabled-tokens`
-
-**Implementation Notes:**
-
-- STX may be enabled by default for all communities
-- SIP-010 tokens (sBTC, USDCx) must implement required traits
-- Token metadata may include:
-  - symbol
-  - asset
+- [x] Maintain a global allowlist of supported tokens (protocol-level)
+- [x] Only Contract Owner / Super Admin can manage protocol allowlist
+- [x] Each community maintains its own list of enabled tokens
+- [x] Only Community Admins can toggle community token preferences
+- [x] `submit-record` / `submit-token-donation` verifies global and community status
+- [x] Read-only helpers provided (`is-token-supported`, etc.)
 
 ---
 

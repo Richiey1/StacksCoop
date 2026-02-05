@@ -54,11 +54,9 @@ Convert the legacy "StacksTacToe" game frontend into the "StacksCoop" ledger fro
 
 ---
 
-## ❌ Pending Issues
-
 ### Issue #4: Record Submission UI
 
-**Status:** ❌ PENDING
+**Status:** ✅ COMPLETED
 
 **Labels:** `frontend`, `feature`, `ui`
 
@@ -68,12 +66,14 @@ Convert the legacy "StacksTacToe" game frontend into the "StacksCoop" ledger fro
 Create a modal/form for users (contributors) to submit new Donation or Spending records.
 
 **Acceptance Criteria:**
-- [ ] Create `SubmitRecordModal` component
-- [ ] Form fields: Type (Donation/Spending), Amount, Description
-- [ ] Connect to `submit-record` contract function
-- [ ] Handle transaction signing and status updates
+- [x] Create `SubmitRecordModal` component
+- [x] Form fields: Type (Donation/Spending), Amount, Description
+- [x] Connect to `submit-record` contract function
+- [x] Handle transaction signing and status updates
 
 ---
+
+## ❌ Pending Issues
 
 ### Issue #5: Community Creation UI
 

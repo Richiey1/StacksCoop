@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useCommunity } from "@/hooks/useCoopData";
 import { RecordsList } from "@/components/records/RecordsList";
+import { SubmitRecordModal } from "@/components/records/SubmitRecordModal";
 
 interface CommunityDashboardProps {
   communityId: number;
@@ -9,6 +11,7 @@ interface CommunityDashboardProps {
 
 export function CommunityDashboard({ communityId }: CommunityDashboardProps) {
   const { data: community, isLoading } = useCommunity(communityId);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
 
   if (isLoading) {
     return <div className="text-white text-center p-8">Loading community...</div>;
@@ -44,13 +47,22 @@ export function CommunityDashboard({ communityId }: CommunityDashboardProps) {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
              <h2 className="text-2xl font-bold text-white">Recent Records</h2>
-             <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+             <button 
+                onClick={() => setIsSubmitModalOpen(true)}
+                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+              >
                 Submit Record
              </button>
         </div>
         
         <RecordsList communityId={communityId} />
       </div>
+
+      <SubmitRecordModal 
+        isOpen={isSubmitModalOpen}
+        onClose={() => setIsSubmitModalOpen(false)}
+        communityId={communityId}
+      />
     </div>
   );
 }

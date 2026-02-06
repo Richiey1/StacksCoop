@@ -218,7 +218,7 @@
         (map-set communities new-id {
             name: name,
             admin: tx-sender,
-            created-at: stacks-block-height,
+            created-at: block-height,
             status: COMMUNITY_ACTIVE,
             total-donations: u0,
             total-spending: u0,
@@ -228,7 +228,7 @@
         ;; Add creator as admin member
         (map-set members 
             { community-id: new-id, member: tx-sender }
-            { role: ROLE_ADMIN, joined-at: stacks-block-height, active: true }
+            { role: ROLE_ADMIN, joined-at: block-height, active: true }
         )
         
         ;; Register community name
@@ -283,7 +283,7 @@
         ;; Add member
         (map-set members 
             { community-id: community-id, member: member }
-            { role: role, joined-at: stacks-block-height, active: true }
+            { role: role, joined-at: block-height, active: true }
         )
         
         ;; Update member count
@@ -292,6 +292,54 @@
         )
         
         (ok true)
+    )
+)
+
+;; Batch add members (Gas optimization)
+(define-private (add-member-internal (member-data { member: principal, role: (string-ascii 20) }) (context { community-id: uint, count: uint }))
+    (let
+        (
+            (member (get member member-data))
+            (role (get role member-data))
+            (community-id (get community-id context))
+            (existing-member (map-get? members { community-id: community-id, member: member }))
+        )
+        (if (and 
+                (is-none existing-member)
+                (not (is-eq member tx-sender))
+                (or (is-eq role ROLE_ADMIN) (is-eq role ROLE_CONTRIBUTOR) (is-eq role ROLE_VIEWER))
+            )
+            (begin
+                (map-set members 
+                    { community-id: community-id, member: member }
+                    { role: role, joined-at: block-height, active: true }
+                )
+                { community-id: community-id, count: (+ (get count context) u1) }
+            )
+            context
+        )
+    )
+)
+
+(define-public (add-members-batch (community-id uint) (new-members (list 50 { member: principal, role: (string-ascii 20) })))
+    (let
+        (
+            (community (unwrap! (map-get? communities community-id) ERR_NOT_FOUND))
+            (result (fold add-member-internal new-members { community-id: community-id, count: u0 }))
+            (added-count (get count result))
+        )
+        ;; Only admin can add members
+        (asserts! (is-community-admin community-id tx-sender) ERR_NOT_ADMIN)
+        
+        (if (> added-count u0)
+            (begin
+                (map-set communities community-id 
+                    (merge community { member-count: (+ (get member-count community) added-count) })
+                )
+                (ok added-count)
+            )
+            (ok u0)
+        )
     )
 )
 
@@ -395,7 +443,7 @@
             amount: amount,
             description: description,
             submitter: tx-sender,
-            timestamp: stacks-block-height,
+            timestamp: block-height,
             status: STATUS_VERIFIED, ;; Auto-verified for now
             verified-by: (some tx-sender),
             project-id: project-id,
@@ -450,7 +498,7 @@
                     amount: amount,
                     description: description,
                     submitter: tx-sender,
-                    timestamp: stacks-block-height,
+                    timestamp: block-height,
                     status: STATUS_VERIFIED,
                     verified-by: (some tx-sender),
                     project-id: none,
@@ -508,7 +556,7 @@
                         amount: amount,
                         description: description,
                         submitter: tx-sender,
-                        timestamp: stacks-block-height,
+                        timestamp: block-height,
                         status: STATUS_VERIFIED,
                         verified-by: (some tx-sender),
                         project-id: none,

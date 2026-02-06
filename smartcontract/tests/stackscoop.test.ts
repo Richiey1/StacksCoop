@@ -120,6 +120,42 @@ describe('StacksCoop - Community Management', () => {
     
     expect(result).toBeOk(Cl.bool(true));
   });
+
+  it('should allow admin to add members in batch', () => {
+    // Create community
+    simnet.callPublicFn(
+      'stackscoop',
+      'create-community',
+      [Cl.stringUtf8('Batch Test Community')],
+      deployer
+    );
+
+    // Batch add members
+    const { result } = simnet.callPublicFn(
+      'stackscoop',
+      'add-members-batch',
+      [
+        Cl.uint(1),
+        Cl.list([
+          Cl.tuple({ member: Cl.principal(user1), role: Cl.stringAscii('contributor') }),
+          Cl.tuple({ member: Cl.principal(user2), role: Cl.stringAscii('viewer') })
+        ])
+      ],
+      deployer
+    );
+    
+    expect(result).toBeOk(Cl.uint(2));
+
+    // Verify member count
+    const communityRes = simnet.callReadOnlyFn(
+      'stackscoop',
+      'get-community',
+      [Cl.uint(1)],
+      deployer
+    );
+    const communityData: any = communityRes.result;
+    expect(communityData.value.value['member-count']).toEqual(Cl.uint(3)); // 1 (creator) + 2 (added)
+  });
 });
 
 describe('StacksCoop - Record Management', () => {

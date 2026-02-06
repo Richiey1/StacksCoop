@@ -444,24 +444,11 @@
             description: description,
             submitter: tx-sender,
             timestamp: block-height,
-            status: STATUS_VERIFIED, ;; Auto-verified for now
-            verified-by: (some tx-sender),
+            status: STATUS_PENDING, ;; Start as pending for off-chain records
+            verified-by: none,
             project-id: project-id,
             token: none
         })
-        
-        ;; Update community totals (still tracked for offchain for now)
-        (if (is-eq record-type RECORD_TYPE_DONATION)
-            (map-set communities community-id 
-                (merge community { total-donations: (+ (get total-donations community) amount) })
-            )
-            (if (is-eq record-type RECORD_TYPE_SPENDING)
-                (map-set communities community-id 
-                    (merge community { total-spending: (+ (get total-spending community) amount) })
-                )
-                true 
-            )
-        )
         
         ;; Update counter
         (var-set record-id-counter new-record-id)
@@ -583,9 +570,13 @@
     (let
         (
             (record (unwrap! (map-get? records record-id) ERR_NOT_FOUND))
+            (community-id (get community-id record))
+            (community (unwrap! (map-get? communities community-id) ERR_NOT_FOUND))
+            (record-type (get record-type record))
+            (amount (get amount record))
         )
         ;; Only admin can verify
-        (asserts! (is-community-admin (get community-id record) tx-sender) ERR_NOT_ADMIN)
+        (asserts! (is-community-admin community-id tx-sender) ERR_NOT_ADMIN)
         
         ;; Record must be pending
         (asserts! (is-eq (get status record) STATUS_PENDING) ERR_INVALID_STATUS)
@@ -596,6 +587,22 @@
                 status: STATUS_VERIFIED,
                 verified-by: (some tx-sender)
             })
+        )
+
+        ;; Update community totals if it was an offchain record (on-chain are already updated)
+        (if (is-eq (get asset-type record) ASSET_OFFCHAIN)
+            (if (is-eq record-type RECORD_TYPE_DONATION)
+                (map-set communities community-id 
+                    (merge community { total-donations: (+ (get total-donations community) amount) })
+                )
+                (if (is-eq record-type RECORD_TYPE_SPENDING)
+                    (map-set communities community-id 
+                        (merge community { total-spending: (+ (get total-spending community) amount) })
+                    )
+                    true 
+                )
+            )
+            true
         )
         
         (ok true)

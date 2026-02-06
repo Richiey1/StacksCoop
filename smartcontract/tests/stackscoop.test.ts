@@ -194,6 +194,67 @@ describe('StacksCoop - Record Management', () => {
     );
     
     expect(result).toBeOk(Cl.uint(1));
+
+    // Verify status is pending (0)
+    const recordRes = simnet.callReadOnlyFn(
+      'stackscoop',
+      'get-record',
+      [Cl.uint(1)],
+      deployer
+    );
+    const recordData: any = recordRes.result;
+    expect(recordData.value.value['status']).toEqual(Cl.uint(0));
+  });
+
+  it('should allow admin to verify records and update totals', () => {
+    // Create community and submit record
+    simnet.callPublicFn(
+      'stackscoop',
+      'create-community',
+      [Cl.stringUtf8('Verification Community')],
+      deployer
+    );
+    
+    simnet.callPublicFn(
+      'stackscoop',
+      'submit-record',
+      [
+        Cl.uint(1),
+        Cl.stringAscii('donation'),
+        Cl.uint(100000000),
+        Cl.stringUtf8('Community donation'),
+        Cl.none()
+      ],
+      deployer
+    );
+
+    // Check total donations is still 0 (pending)
+    const donationsBefore = simnet.callReadOnlyFn(
+      'stackscoop',
+      'get-total-donations',
+      [Cl.uint(1)],
+      deployer
+    );
+    expect(donationsBefore.result).toBeOk(Cl.uint(0));
+
+    // Verify record
+    const { result } = simnet.callPublicFn(
+      'stackscoop',
+      'verify-record',
+      [Cl.uint(1)],
+      deployer
+    );
+    
+    expect(result).toBeOk(Cl.bool(true));
+
+    // Check total donations updated
+    const donationsAfter = simnet.callReadOnlyFn(
+      'stackscoop',
+      'get-total-donations',
+      [Cl.uint(1)],
+      deployer
+    );
+    expect(donationsAfter.result).toBeOk(Cl.uint(100000000));
   });
 
   it('should allow contributors to submit spending records', () => {
@@ -282,6 +343,14 @@ describe('StacksCoop - Record Management', () => {
       deployer
     );
 
+    // Verify donation
+    simnet.callPublicFn(
+      'stackscoop',
+      'verify-record',
+      [Cl.uint(1)],
+      deployer
+    );
+
     // Submit spending
     simnet.callPublicFn(
       'stackscoop',
@@ -293,6 +362,14 @@ describe('StacksCoop - Record Management', () => {
         Cl.stringUtf8('Spending 1'),
         Cl.none()
       ],
+      deployer
+    );
+
+    // Verify spending
+    simnet.callPublicFn(
+      'stackscoop',
+      'verify-record',
+      [Cl.uint(2)],
       deployer
     );
 

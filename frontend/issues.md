@@ -77,7 +77,7 @@ Create a modal/form for users (contributors) to submit new Donation or Spending 
 
 ### Issue #5: Community Creation UI
 
-**Status:** ❌ PENDING
+**Status:** ✅ COMPLETED
 
 **Labels:** `frontend`, `feature`, `ui`
 
@@ -87,9 +87,27 @@ Create a modal/form for users (contributors) to submit new Donation or Spending 
 Create a UI for users to create new Communities.
 
 **Acceptance Criteria:**
-- [ ] Create `CreateCommunityModal` component
-- [ ] Form fields: Community Name
-- [ ] Connect to `create-community` contract function
+- [x] Create `CreateCommunityModal` component
+- [x] Form fields: Community Name
+- [x] Connect to `create-community` contract function
+- [x] Add validation for community name
+- [x] Display error messages
+- [x] Show loading state during transaction
+- [x] Close modal and switch to new community on success
+- [x] Add "Create New Community" button to main page
+
+**Implementation Details:**
+- Created `components/community/CreateCommunityModal.tsx` with:
+  - Real-time name validation (3-100 characters)
+  - Input validation for allowed characters
+  - Transaction status feedback
+  - Error display with helpful messages
+  - Disabled states during submission
+- Integrated into main page (`app/page.tsx`) with:
+  - Blue "Create New Community" button with icon
+  - Modal opens on button click
+  - Auto-switches to new community on success
+- Uses existing `useStacksCoop().createCommunity()` hook
 
 ---
 

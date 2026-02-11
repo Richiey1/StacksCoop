@@ -2,12 +2,20 @@
 
 import { useState, Suspense } from "react";
 import { CommunityDashboard } from "@/components/community/CommunityDashboard";
+import { CreateCommunityModal } from "@/components/community/CreateCommunityModal";
 import { useStacks } from "@/contexts/StacksProvider";
 import { CONTRACT_ADDRESS } from "@/lib/stacksConfig";
+import { Plus } from "lucide-react";
 
 function HomeContent() {
   const { address } = useStacks();
   const [activeCommunityId, setActiveCommunityId] = useState<number>(1); // Default to community 1 for MVP
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const handleCommunityCreated = (newCommunityId: number) => {
+    // Switch to the newly created community
+    setActiveCommunityId(newCommunityId);
+  };
 
   return (
     <div 
@@ -36,10 +44,26 @@ function HomeContent() {
                 Transparent, immutable, and verifiable records for your community organization.
                 Anchored on Bitcoin via Stacks.
             </p>
+            
+            {/* Create Community Button */}
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="mt-6 flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors border-2 border-blue-500"
+            >
+              <Plus className="w-5 h-5" />
+              Create New Community
+            </button>
         </div>
 
         <CommunityDashboard communityId={activeCommunityId} />
       </div>
+
+      {/* Create Community Modal */}
+      <CreateCommunityModal 
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={handleCommunityCreated}
+      />
     </div>
   );
 }

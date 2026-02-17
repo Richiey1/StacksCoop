@@ -65,7 +65,7 @@ export function CommunityDashboard({ communityId }: CommunityDashboardProps) {
 
         {/* Sidebar - Management */}
         <div className="space-y-6">
-          {isAdmin && <MemberManagement communityId={communityId} />}
+          {isAdmin && <MemberManagement communityId={communityId} adminAddress={community.admin} />}
           
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
             <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">About Community</h3>

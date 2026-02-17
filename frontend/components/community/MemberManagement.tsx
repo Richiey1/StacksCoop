@@ -4,16 +4,24 @@ import { useState } from "react";
 import { UserPlus, Shield, User, X, Loader2 } from "lucide-react";
 import { useStacksCoop } from "@/hooks/useStacksCoop";
 
+import { MemberItem } from "./MemberItem";
+
 interface MemberManagementProps {
   communityId: number;
+  adminAddress: string;
 }
 
-export function MemberManagement({ communityId }: MemberManagementProps) {
+export function MemberManagement({ communityId, adminAddress }: MemberManagementProps) {
   const { addMember } = useStacksCoop();
   const [isAdding, setIsAdding] = useState(false);
   const [newMemberAddress, setNewMemberAddress] = useState("");
   const [selectedRole, setSelectedRole] = useState("contributor");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Note: Since we don't have an indexer to list all members,
+  // we manually display the admin for now. In a real scenario,
+  // we would fetch the list of members from a subgraph.
+  const knownMembers = [adminAddress];
 
   const handleAddMember = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,20 +105,12 @@ export function MemberManagement({ communityId }: MemberManagementProps) {
         </form>
       )}
 
-      {/* Member List Placeholder */}
+      {/* Member List */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
-              <User className="w-4 h-4 text-blue-400" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-white">Community Admin</p>
-              <p className="text-[10px] text-gray-500 font-mono">Principal Creator</p>
-            </div>
-          </div>
-          <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 text-[8px] font-bold uppercase">Admin</span>
-        </div>
+        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Community Roster</p>
+        {knownMembers.map(addr => (
+          <MemberItem key={addr} communityId={communityId} address={addr} />
+        ))}
       </div>
     </div>
   );

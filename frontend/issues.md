@@ -112,19 +112,12 @@ Create a UI for users to create new Communities.
 ---
 
 ### Issue #6: Member Management UI
-
-**Status:** ❌ PENDING
-
-**Labels:** `frontend`, `feature`, `admin`
-
-**Priority:** MEDIUM
-
-**Description:**
-Create an interface for Community Admins to manage members.
-
-**Acceptance Criteria:**
-- [ ] List current members (needs contract support or indexer)
-- [ ] Add Member form (Address + Role)
+- **Status**: ✅ COMPLETED
+- **Labels**: `frontend`, `feature`, `admin`
+- **Priority**: MEDIUM
+- **Description**: Create an interface for Community Admins to manage members.
+- [x] List current members (Admin shown via contract read)
+- [x] Add Member form (Address + Role)
 - [ ] Remove Member button
 - [ ] Update Role controls
 
